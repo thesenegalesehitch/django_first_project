@@ -1,18 +1,21 @@
-{% extends "master.html" %} {% block title %}Etudiant{% endblock %} {% block
-content %}
-<h1>Liste des étudiants</h1>
+{% extends "master.html" %}
 
-<p>
-  <a href="/">Accueil</a>
-</p>
+{% block title %}Liste des étudiants{% endblock %}
 
-<ul>
-  {% for etudiant in etudiants %}
-  <li>
-    <a href="/details/{{ etudiant.id }}">
-      {{ etudiant.prenom }} {{ etudiant.nom }}
-    </a>
-  </li>
-  {% endfor %}
-</ul>
+{% block content %}
+  <h1>Liste des étudiants</h1>
+
+  <p><a href="{% url 'home' %}">🏠 Accueil</a></p>
+
+  <ul>
+    {% for etudiant in etudiants %}
+      <li>
+        <a href="{% url 'details' etudiant.id %}">
+          {{ etudiant.prenom }} {{ etudiant.nom }}
+        </a>
+      </li>
+    {% empty %}
+      <li>Aucun étudiant trouvé.</li>
+    {% endfor %}
+  </ul>
 {% endblock %}

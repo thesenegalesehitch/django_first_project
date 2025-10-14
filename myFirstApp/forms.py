@@ -1,16 +1,50 @@
-# your_app/forms.py
+# myFirstApp/forms.py
+# Formulaire d'inscription basé sur UserCreationForm
+# On ajoute des widgets pour avoir des placeholders et la classe bootstrap 'form-control'
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User # Assuming you have a custom user model
-
-
+from django.contrib.auth.models import User
 
 class FormulaireInscription(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-      model = User 
-      fields = ('username', 'email', 'first_name', 'last_name')
-        # Add any additional fields you want to include in the form
-class FormulaireInscription(UserCreationForm):
-    class Meta():
-        model = User 
-        fields = ('username', 'email', 'password1', 'password2')
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Email...'
+        })
+    )
+
+    username = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': "Nom d'utilisateur..."
+        })
+    )
+
+    password1 = forms.CharField(
+        label="Mot de passe",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Mot de passe...'
+        })
+    )
+
+    password2 = forms.CharField(
+        label="Confirmer le mot de passe",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Confirmer mot de passe...'
+        })
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+    # Optionnel : nettoyer l'email pour éviter doublons si tu veux
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Un compte avec cet e-mail existe déjà.")
+        return email

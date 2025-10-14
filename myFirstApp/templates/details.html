@@ -1,18 +1,13 @@
-
 {% extends "master.html" %}
 
-{% block title %}
- Détails étudiant
-{% endblock %}
-
+{% block title %}Détails étudiant{% endblock %}
 
 {% block content %}
   <h1>{{ etudiant.prenom }} {{ etudiant.nom }}</h1>
-  
-    <p>Téléphone: {{ etudiant.telephone }}</p>
-    <p>Adresse: {{ etudiant.adresse }}</p>
-    <p>Date de naissance: {{ etudiant.date }}</p>
-  
-  <p>Retour vers <a href="/myFirstApp">liste des étudiants</a></p>
-  
+
+  <p><strong>Téléphone :</strong> {{ etudiant.telephone }}</p>
+  <p><strong>Adresse :</strong> {{ etudiant.adresse }}</p>
+  <p><strong>Date de naissance :</strong> {{ etudiant.date }}</p>
+
+  <p>⬅️ Retour vers la <a href="{% url 'etudiants' %}">liste des étudiants</a></p>
 {% endblock %}

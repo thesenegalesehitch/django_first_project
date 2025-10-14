@@ -1,36 +1,82 @@
 {% load static %}
 <!DOCTYPE html>
-<!-- Coding By CodingNepal - www.codingnepalweb.com -->
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Website with Login & Signup Form | CodingNepal</title>
-    <!-- Google Fonts Link For Icons -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0"
-    />
-    <link rel="stylesheet" href="{% static 'style.css' %}" />
-    <script src="{% static 'script.js' %}" defer></script>
-  </head>
-  <body>
-    <header>
-      <nav class="navbar">
-        <span class="hamburger-btn material-symbols-rounded">menu</span>
-        <a href="#" class="logo">
-          <img src="{% static 'images/logo.png' %}" alt="logo" />
-          <h2></h2>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website with Login & Signup Form | CodingNepal</title>
+
+  <!-- Google Fonts Link For Icons -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+  <!-- Liens statiques -->
+  <link rel="stylesheet" href="{% static 'style.css' %}" />
+  <script src="{% static 'script.js' %}" defer></script>
+
+  <style>
+    /* Style pour les liens désactivés */
+    .disabled-link {
+      pointer-events: none;
+      color: gray;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .welcome-text {
+      margin-right: 10px;
+      color: #fff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <span class="hamburger-btn material-symbols-rounded">menu</span>
+
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo.png' %}" alt="logo" />
+        <h2></h2>
+      </a>
+
+      <ul class="links">
+        <span class="close-btn material-symbols-rounded">close</span>
+        <li><a href="{% url 'home' %}">Home</a></li>
+
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'etudiants' %}">Dossier</a></li>
+        <li><a href="{% url 'cours' %}">Cours</a></li>
+        <li><a href="{% url 'contact_us' %}">Contact us</a></li>
+        {% else %}
+        <!-- Liens désactivés si pas connecté -->
+        <li><a href="{% url 'login' %}" class="disabled-link">Dossier</a></li>
+        <li><a href="{% url 'login' %}" class="disabled-link">Cours</a></li>
+        <li><a href="{% url 'login' %}" class="disabled-link">Contact us</a></li>
+        {% endif %}
+      </ul>
+
+      {% if user.is_authenticated %}
+      <div class="user-info">
+        <span class="welcome-text">Bienvenue, {{ user.username }} !</span>
+        <a href="{% url 'logout' %}">
+          <button class="login-btn">LOG OUT</button>
         </a>
-        <ul class="links"> 
-          <span class="close-btn material-symbols-rounded">close</span>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Dossier</a></li>
-          <li><a href="#">Cours</a></li>
-          <li><a href="#">Contact us</a></li>
-        </ul>
-        <a href="{% url 'inscription' %}"><button class="login-btn">LOG IN</button></a>
-      </nav>
-    </header>
-  </body>
+      </div>
+      {% else %}
+      <a href="{% url 'login' %}">
+        <button class="login-btn">LOG IN</button>
+      </a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main style="text-align:center; padding: 50px;">
+    <h1>Bienvenue sur le site !</h1>
+    <p>Utilisez le menu pour naviguer.</p>
+  </main>
+
+</body>
 </html>
