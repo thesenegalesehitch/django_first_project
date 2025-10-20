@@ -34,7 +34,7 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
          name='password_reset_complete'),
      path('dossier-detail/', views.dossier_detail, name='dossier_detail'),
-
+     path('password_reset_display/<str:username>/', views.password_reset_display, name='password_reset_display'),
 
 ]
 

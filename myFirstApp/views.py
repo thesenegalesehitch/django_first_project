@@ -4,6 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Etudiant, Dossier, Cours
 from .forms import FormulaireInscription, DossierForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 
 # --- Authentification ---
@@ -11,17 +15,21 @@ def inscription(request):
     if request.method == 'POST':
         formulaire = FormulaireInscription(request.POST)
         if formulaire.is_valid():
-            formulaire.save()
+            # Créer l'utilisateur
+            user = formulaire.save()
+            
+            # Connexion automatique du nouvel utilisateur
+            login(request, user)
+            
             username = formulaire.cleaned_data.get('username')
-            messages.success(request, f'Le compte a été créé avec succès pour {username} !')
-            return redirect('login')
+            messages.success(request, f'Bienvenue {username} ! Votre compte a été créé et vous êtes connecté.')
+            return redirect('home')  # redirection sécurisée vers home
         else:
             messages.error(request, "Une erreur est survenue. Veuillez vérifier le formulaire.")
     else:
         formulaire = FormulaireInscription()
 
     return render(request, 'inscription.html', {'formulaire': formulaire})
-
 
 def loginPage(request):
     if request.user.is_authenticated:
@@ -106,3 +114,10 @@ def dossier_detail(request):
 def cours_list(request):
     cours_list = Cours.objects.all().order_by('-date_creation')
     return render(request, 'cours_list.html', {'cours_list': cours_list})
+
+def password_reset_display(request, username):
+    user = User.objects.get(username=username)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    reset_link = request.build_absolute_uri(f'/reset/{uid}/{token}/')
+    return render(request, 'password_reset_display.html', {'reset_link': reset_link})
