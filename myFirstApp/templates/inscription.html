@@ -67,8 +67,9 @@
 		<div class="user_card">
 			<h3 id="form-title">INSCRIPTION</h3>
 
-			<form method="POST" action="">
+			<form method="post" action="">
 				{% csrf_token %}
+				
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
 						<span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -112,7 +113,7 @@
 	</div>
 
 	<script>
-		// Corrected JS pour les placeholders
+		// JS pour placeholders
 		const fields = document.querySelectorAll('input');
 		if (fields.length >= 4) {
 			fields[1].placeholder = 'Login...';

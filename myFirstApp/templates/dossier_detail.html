@@ -1,0 +1,57 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Dossier{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5" style="background-color:#f3f0ff; min-height:90vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10 p-5" style="background-color:#fff; border-radius:20px; box-shadow:0 8px 16px rgba(0,0,0,0.15);">
+
+            <h2 class="text-center mb-5" style="color:#6A0DAD; font-weight:bold;">Détails de mon dossier</h2>
+
+            <!-- Photo utilisateur -->
+            <div class="text-center mb-4">
+                {% if dossier.photo %}
+                    <img src="{{ dossier.photo.url }}" alt="Photo utilisateur" class="rounded-circle" style="width:160px; height:160px; object-fit:cover; border:4px solid #6A0DAD;">
+                {% else %}
+                    <img src="{% static 'images/default-user.png' %}" alt="Photo par défaut" class="rounded-circle" style="width:160px; height:160px; object-fit:cover; border:4px solid #6A0DAD;">
+                {% endif %}
+            </div>
+
+            <!-- Informations de l'utilisateur -->
+            <ul class="list-group mb-4">
+                <li class="list-group-item"><strong>Nom :</strong> {{ dossier.nom }}</li>
+                <li class="list-group-item"><strong>Prénom :</strong> {{ dossier.prenom }}</li>
+                <li class="list-group-item"><strong>Téléphone :</strong> {{ dossier.telephone }}</li>
+                <li class="list-group-item"><strong>Adresse :</strong> {{ dossier.adresse }}</li>
+                <li class="list-group-item"><strong>Date de naissance :</strong> {{ dossier.date_naissance }}</li>
+            </ul>
+
+            <!-- Boutons alignés -->
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'home' %}" class="btn" style="background-color:#6A0DAD; color:#fff; font-weight:bold; padding:12px 30px; border-radius:10px;">
+                    Accueil
+                </a>
+                <a href="{% url 'mon_dossier' %}" class="btn" style="background-color:#6A0DAD; color:#fff; font-weight:bold; padding:12px 30px; border-radius:10px;">
+                    Modifier
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+.list-group-item {
+    font-size: 15px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #dcd6f7;
+}
+.list-group-item strong {
+    color: #4B0082;
+}
+</style>
+{% endblock %}

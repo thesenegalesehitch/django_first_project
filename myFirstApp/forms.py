@@ -4,6 +4,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Dossier
+
 
 class FormulaireInscription(UserCreationForm):
     email = forms.EmailField(
@@ -48,3 +50,15 @@ class FormulaireInscription(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Un compte avec cet e-mail existe déjà.")
         return email
+
+class DossierForm(forms.ModelForm):
+    class Meta:
+        model = Dossier
+        fields = ['photo', 'nom', 'prenom', 'telephone', 'adresse', 'date_naissance']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom'}),
+            'prenom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Prénom'}),
+            'telephone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Téléphone'}),
+            'adresse': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Adresse'}),
+            'date_naissance': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }

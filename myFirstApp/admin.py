@@ -1,25 +1,30 @@
 from django.contrib import admin
-from .models import Etudiant
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+from .models import Dossier, Cours
 
-class EtudiantAdmin(admin.ModelAdmin):
-    list_display = ('prenom', 'nom', 'adresse', 'date')
-    search_fields = ('nom', 'prenom', 'adresse')
-    list_filter = ('date',)
-    # list_per_page = 10
-    # list_max_show_all = 100
-    # list_editable = ('adresse',)
-    # list_display_links = ('prenom', 'nom')
-    # date_hierarchy = 'date'
-    # save_on_top = True
-    # empty_value_display = '-empty-'
-    # readonly_fields = ('date',)
+# --- Admin personnalisé pour Dossier ---
+class DossierAdmin(admin.ModelAdmin):
+    list_display = ('user', 'nom', 'prenom', 'telephone', 'adresse', 'date_naissance')
+    search_fields = ('user__username', 'nom', 'prenom', 'adresse', 'telephone')
 
-    # def get_readonly_fields(self, request, obj=None):
-    #     if obj is None:
-    #         return self.readonly_fields
-    #     return super().get_readonly_fields(request, obj)
-    
 
-# Register your models here.
-admin.site.register(Etudiant, EtudiantAdmin)
+# --- Admin personnalisé pour Cours ---
+class CoursAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'date_creation')
+    search_fields = ('titre', 'description')
+    list_filter = ('date_creation',)
 
+
+# --- Admin personnalisé pour les utilisateurs ---
+class CustomUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'is_staff', 'is_superuser', 'is_active', 'date_joined')
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
+    search_fields = ('username', 'email')
+
+
+# --- Enregistrements dans l'admin ---
+admin.site.unregister(User)  # Supprime la version par défaut
+admin.site.register(User, CustomUserAdmin)  # Réenregistre avec la version personnalisée
+admin.site.register(Dossier, DossierAdmin)
+admin.site.register(Cours, CoursAdmin)

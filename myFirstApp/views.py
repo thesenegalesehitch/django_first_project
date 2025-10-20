@@ -1,109 +1,108 @@
-from django.http import HttpResponse
-from django.template import loader
-from .models import Etudiant
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from .forms import FormulaireInscription
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from .models import Etudiant, Dossier, Cours
+from .forms import FormulaireInscription, DossierForm
 
 
-
+# --- Authentification ---
 def inscription(request):
-    form = FormulaireInscription()
-
     if request.method == 'POST':
-        form = FormulaireInscription(request.POST)
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Le compte a été créé pour ' + user)
+        formulaire = FormulaireInscription(request.POST)
+        if formulaire.is_valid():
+            formulaire.save()
+            username = formulaire.cleaned_data.get('username')
+            messages.success(request, f'Le compte a été créé avec succès pour {username} !')
             return redirect('login')
+        else:
+            messages.error(request, "Une erreur est survenue. Veuillez vérifier le formulaire.")
+    else:
+        formulaire = FormulaireInscription()
 
-    context = {'formulaire': form}
-    return render(request, 'inscription.html', context)
+    return render(request, 'inscription.html', {'formulaire': formulaire})
+
 
 def loginPage(request):
     if request.user.is_authenticated:
         return redirect('home')
-    else:
-        if request.method == 'POST':
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                messages.info(request, 'Nom d’utilisateur ou mot de passe incorrect')
-        context = {}
-        return render(request, 'login.html', context)
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Nom d’utilisateur ou mot de passe incorrect.')
+
+    return render(request, 'login.html')
+
 
 def logoutUser(request):
     logout(request)
+    messages.info(request, "Vous avez été déconnecté.")
     return redirect('home')
 
-def apprenants(request):
-    etudiants = Etudiant.objects.all().values()
-    template = loader.get_template('etudiants.html')
-    context = {'etudiants': etudiants}
-    return HttpResponse(template.render(context, request))
 
-def details(request, id):
-    etudiant = Etudiant.objects.get(id=id)
-    template = loader.get_template('details.html')
-    context = {'etudiant': etudiant}
-    return HttpResponse(template.render(context, request))
-
-def home(request):
-    template = loader.get_template('home.html')
-    return HttpResponse(template.render())
-
-def main(request):
-    template = loader.get_template('main.html')
-    return HttpResponse(template.render())
-
-def template(request):
-    mesdonnees = Etudiant.objects.all().values()
-    donneesfiltres = Etudiant.objects.filter(prenom='djibril').values()
-    nomdonnees = Etudiant.objects.filter(prenom__startswith='I').values()
-    ordonnees = Etudiant.objects.all().order_by('nom').values()
-    template = loader.get_template('template.html')
-    context = {
-        'mesdonnees': mesdonnees,
-        'donneesfiltres': donneesfiltres,
-        'nomdonnees': nomdonnees,
-        'ordonnees': ordonnees,
-    }
-    return HttpResponse(template.render(context, request))
-
+# --- Pages principales ---
+@login_required
 def home(request):
     return render(request, 'home.html')
-    template = loader.get_template('home.html')
-    return HttpResponse(template.render({}, request))
 
-@login_required(login_url='login')
+
+@login_required
 def apprenants(request):
-    etudiants = Etudiant.objects.all().values()
-    template = loader.get_template('etudiants.html')
-    context = {'etudiants': etudiants}
-    return HttpResponse(template.render(context, request))
+    etudiants = Etudiant.objects.all()
+    return render(request, 'etudiants.html', {'etudiants': etudiants})
 
 
-@login_required(login_url='login')
+@login_required
 def details(request, id):
-    etudiant = Etudiant.objects.get(id=id)
-    template = loader.get_template('details.html')
-    context = {'etudiant': etudiant}
-    return HttpResponse(template.render(context, request))
+    etudiant = get_object_or_404(Etudiant, id=id)
+    return render(request, 'details.html', {'etudiant': etudiant})
 
 
-@login_required(login_url='login')
-def cours(request):
-    return render(request, 'cours.html')
-
-
-@login_required(login_url='login')
+@login_required
 def contact_us(request):
     return render(request, 'contact_us.html')
+
+
+# --- Gestion du dossier utilisateur ---
+@login_required
+def mon_dossier(request):
+    dossier, created = Dossier.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        # Suppression de la photo si bouton "delete_photo"
+        if 'delete_photo' in request.POST:
+            dossier.photo.delete(save=True)
+            messages.success(request, 'Photo supprimée avec succès.')
+            return redirect('mon_dossier')
+
+        form = DossierForm(request.POST, request.FILES, instance=dossier)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Votre dossier a été mis à jour avec succès.')
+            return redirect('mon_dossier')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs dans le formulaire.')
+    else:
+        form = DossierForm(instance=dossier)
+
+    return render(request, 'mon_dossier.html', {'form': form, 'dossier': dossier})
+
+
+@login_required
+def dossier_detail(request):
+    dossier = get_object_or_404(Dossier, user=request.user)
+    return render(request, 'dossier_detail.html', {'dossier': dossier})
+
+
+# --- Gestion des cours ---
+@login_required
+def cours_list(request):
+    cours_list = Cours.objects.all().order_by('-date_creation')
+    return render(request, 'cours_list.html', {'cours_list': cours_list})

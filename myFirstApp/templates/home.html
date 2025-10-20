@@ -47,7 +47,7 @@
         <li><a href="{% url 'home' %}">Home</a></li>
 
         {% if user.is_authenticated %}
-        <li><a href="{% url 'etudiants' %}">Dossier</a></li>
+        <li><a href="{% url 'mon_dossier' %}">Dossier</a></li>
         <li><a href="{% url 'cours' %}">Cours</a></li>
         <li><a href="{% url 'contact_us' %}">Contact us</a></li>
         {% else %}

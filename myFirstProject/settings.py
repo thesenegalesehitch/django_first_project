@@ -84,6 +84,11 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'productionfiles'
 
+#fichier media pour l'upload des photos
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 # Configuration email (en développement, affichage dans la console)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

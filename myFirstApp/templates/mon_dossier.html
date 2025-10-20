@@ -1,0 +1,113 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Mon Dossier{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5" style="background-color:#e6f0ff; min-height:90vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10 p-5" style="background-color:#fff; border-radius:20px; box-shadow:0 8px 16px rgba(0,0,0,0.15);">
+
+            <h2 class="text-center mb-5" style="color:#4B0082; font-weight:bold;">Mon Dossier</h2>
+
+            <!--  Message de succès -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert text-center fade show" role="alert"
+                         style="background-color:#4B0082; color:white; font-weight:bold; border-radius:10px;"
+                         id="msg-success">
+                         {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!--  Photo utilisateur -->
+            <div class="text-center mb-4">
+                {% if dossier.photo %}
+                    <img src="{{ dossier.photo.url }}" alt="Photo utilisateur"
+                         class="rounded-circle"
+                         style="width:160px; height:160px; object-fit:cover; border:4px solid #4B0082;">
+                {% else %}
+                    <img src="{% static 'images/default-user.png' %}" alt="Photo par défaut"
+                         class="rounded-circle"
+                         style="width:160px; height:160px; object-fit:cover; border:4px solid #4B0082;">
+                {% endif %}
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row g-3 text-start">
+
+                    <!-- Photo -->
+                    <div class="col-12 text-center mb-3">
+                        <label class="form-label" style="color:#4B0082; font-weight:bold;">Photo de profil</label><br>
+                        {{ form.photo }}
+                        {% if dossier.photo %}
+                            <button type="submit" name="delete_photo" value="true"
+                                    class="btn btn-outline-danger mt-2">🗑 Supprimer la photo</button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Nom / Prénom -->
+                    <div class="col-md-6">
+                        <label for="id_nom" class="form-label" style="color:#4B0082; font-weight:bold;">Nom</label>
+                        {{ form.nom }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_prenom" class="form-label" style="color:#4B0082; font-weight:bold;">Prénom</label>
+                        {{ form.prenom }}
+                    </div>
+
+                    <!-- Téléphone / Date naissance -->
+                    <div class="col-md-6">
+                        <label for="id_telephone" class="form-label" style="color:#4B0082; font-weight:bold;">Téléphone</label>
+                        {{ form.telephone }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_date_naissance" class="form-label" style="color:#4B0082; font-weight:bold;">Date de naissance</label>
+                        {{ form.date_naissance }}
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="col-12">
+                        <label for="id_adresse" class="form-label" style="color:#4B0082; font-weight:bold;">Adresse</label>
+                        {{ form.adresse }}
+                    </div>
+                </div>
+
+                <!--  Boutons bien centrés -->
+                <div class="d-flex justify-content-center mt-5 gap-3">
+                    <a href="{% url 'home' %}" class="btn"
+                       style="background-color:#4B0082; color:white; padding:12px 30px; font-weight:bold; border:none; border-radius:10px;">
+                       Accueil
+                    </a>
+                    <button type="submit" class="btn"
+                            style="background-color:#FF8C00; color:white; padding:12px 30px; font-weight:bold; border:none; border-radius:10px;">
+                             Sauvegarder
+                    </button>
+                </div>
+
+                <!-- Lien secondaire -->
+                <div class="mt-4 text-center">
+                    <a href="{% url 'dossier_detail' %}" class="btn btn-outline-primary"
+                       style="padding:12px 30px; font-weight:bold; color:#4B0082; border:2px solid #4B0082; border-radius:10px;">
+                       Voir mon dossier complet
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--  Script pour cacher le message après 3 secondes -->
+<script>
+    setTimeout(function(){
+        const msg = document.getElementById('msg-success');
+        if(msg){
+            msg.style.transition = "opacity 0.5s ease";
+            msg.style.opacity = 0;
+            setTimeout(() => msg.remove(), 500);
+        }
+    }, 3000);
+</script>
+{% endblock %}
