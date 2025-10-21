@@ -1,14 +1,14 @@
 from django.urls import path
 from . import views
-from django.contrib.auth import views as auth_views  # vues intégrées
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     # Pages principales
     path('', views.home, name='home'),
-    path('myFirstApp/', views.apprenants, name='etudiants'),
-    path('myFirstApp/details/<int:id>/', views.details, name='details'),
+    path('myFirstApp/', views.gestion_etudiants, name='etudiants'),  # renommé pour correspondre à views.py
+    path('myFirstApp/details/<int:id>/', views.details_etudiant, name='details_etudiant'),
 
     # Authentification
     path('inscription/', views.inscription, name='inscription'),
@@ -16,9 +16,10 @@ urlpatterns = [
     path('logout/', views.logoutUser, name='logout'),
 
     # Pages protégées
-    path('cours/', views.cours_list, name='cours'),  # le nom utilisé dans les templates
+    path('cours/', views.cours_list, name='cours'),
     path('contact-us/', views.contact_us, name='contact_us'),
     path('mon-dossier/', views.mon_dossier, name='mon_dossier'),
+    path('dossier-detail/', views.dossier_detail, name='dossier_detail'),
 
     # Réinitialisation mot de passe
     path('reset_password/',
@@ -33,9 +34,7 @@ urlpatterns = [
     path('reset_password_complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
          name='password_reset_complete'),
-     path('dossier-detail/', views.dossier_detail, name='dossier_detail'),
-     path('password_reset_display/<str:username>/', views.password_reset_display, name='password_reset_display'),
-
+    path('password_reset_display/<str:username>/', views.password_reset_display, name='password_reset_display'),
 ]
 
 # Servir les fichiers médias pendant le debug

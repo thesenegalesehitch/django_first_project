@@ -1,79 +1,22 @@
-{% extends "master.html" %}
 {% load static %}
-
-{% block title %}Détails étudiant{% endblock %}
-
-{% block content %}
-<style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #e6f0ff; /* bleu clair */
-    color: #4B0082; /* violet foncé */
-  }
-
-  .details-card {
-    max-width: 500px;
-    margin: 50px auto;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    padding: 30px;
-    text-align: center;
-  }
-
-  .details-card img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #FF8C00; /* orange foncé */
-    margin-bottom: 20px;
-  }
-
-  .details-card h1 {
-    margin-bottom: 15px;
-  }
-
-  .details-card p {
-    font-size: 16px;
-    margin: 5px 0;
-  }
-
-  .back-link {
-    display: inline-block;
-    margin-top: 20px;
-    text-decoration: none;
-    color: #FF8C00; /* orange foncé */
-    font-weight: bold;
-    transition: all 0.3s;
-  }
-
-  .back-link:hover {
-    color: #4B0082; /* violet foncé */
-  }
-</style>
-
-<div class="details-card">
-  {% comment %}
-    Affiche la photo de l'utilisateur connecté si elle existe,
-    sinon la photo de l'étudiant sélectionné,
-    sinon la photo par défaut.
-  {% endcomment %}
-
-  {% if request.user.is_authenticated and request.user.dossier.photo %}
-      <img src="{{ request.user.dossier.photo.url }}" alt="Photo de {{ request.user.username }}">
-  {% elif etudiant.photo %}
-      <img src="{{ etudiant.photo.url }}" alt="Photo de {{ etudiant.prenom }}">
-  {% else %}
-      <img src="{% static 'images/default_profile.png' %}" alt="Photo par défaut">
-  {% endif %}
-
-  <h1>{{ etudiant.prenom }} {{ etudiant.nom }}</h1>
-
-  <p><strong>Téléphone :</strong> {{ etudiant.telephone }}</p>
-  <p><strong>Adresse :</strong> {{ etudiant.adresse }}</p>
-  <p><strong>Date de naissance :</strong> {{ etudiant.date }}</p>
-
-  <a href="{% url 'etudiants' %}" class="back-link">⬅️ Retour vers la liste des étudiants</a>
-</div>
-{% endblock %}
+<div class="dossier-container">
+  <h2>Bulletins de {{ etudiant.prenom }} {{ etudiant.nom }}</h2>
+  {% if bulletins %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Matière</th>
+          <th>Note</th>
+          <th>Commentaire</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bulletins %}
+        <tr>
+          <td>{{ b.matiere }}</td>
+          <td>{{ b.note }}</td>
+          <td>{{ b.commentaire }}</td>
+          <td>{{ b.date_creation }}</td>
+        </tr>
+        {%

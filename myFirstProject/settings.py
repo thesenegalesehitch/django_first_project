@@ -109,13 +109,18 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 """
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# Pour tests, affichage des emails dans la console
+# settings.py
+
+# Pour tester localement
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_USE_TLS = True
-#EMAIL_PORT = 587
-#EMAIL_HOST_USER = 'tonemail@gmail.com'        
-#EMAIL_HOST_PASSWORD = 'ton_mot_de_passe_app'  
-#DEFAULT_FROM_EMAIL = 'tonemail@gmail.com'
+
+# Pour envoyer de vrais emails (exemple avec Gmail)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ndouralexandre09@gmail.com'
+EMAIL_HOST_PASSWORD = 'ton_mot_de_passe_application'  # Attention: pas ton mot de passe principal
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 #decorators / a tout inscrit on lui cree un profil vide et il doit etre mis dans un groupe soit admin soit etudiant qu'il peut renseigner plus tard on lui donnera un avatar par defaut il doit y avoir une difference entre administrateur et etudiant l'admin doit pouvoir faire des taches avancees l'admin doit pouvoir mettre des bulletins sur les dossiers pour chaque etudiants 
