@@ -1,9 +1,190 @@
-{% extends "master.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
 
-{% block title %}Contact{% endblock %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | ISEP Diamniadio</title>
 
-{% block content %}
-<h1>Contactez-nous</h1>
-<p>Voici la page de contact du site.</p>
-<p><a href="/">Retour à l'accueil</a></p>
-{% endblock %}
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Fichiers statiques -->
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <script src="{% static 'script.js' %}" defer></script>
+
+  <style>
+    /* Fond bleu clair subtil */
+    body {
+      background: linear-gradient(180deg, #f8fbff 0%, #e6f0ff 100%);
+      font-family: "Poppins", sans-serif;
+      color: #222;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: #2c2c74;
+      padding: 0.8rem 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      color: #f2f2f2 !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      color: #ffb84d !important;
+    }
+
+    .login-btn {
+      background-color: #ff8c00;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 16px;
+      color: #fff;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #ffa94d;
+      transform: translateY(-1px);
+    }
+
+    /* Formulaire centralisé et esthétique */
+    .contact-container {
+      max-width: 700px;
+      margin: 60px auto 80px auto;
+      padding: 30px 40px;
+      background: #ffffffdd;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-container h2 {
+      text-align: center;
+      color: #2c2c74;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
+
+    .contact-container .form-label {
+      font-weight: 500;
+    }
+
+    .contact-container .btn-submit {
+      background-color: #2c2c74;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px 25px;
+      transition: 0.3s;
+    }
+
+    .contact-container .btn-submit:hover {
+      background-color: #4646a6;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      background: #2c2c74;
+      color: #fff;
+      font-weight: 500;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+          <img src="{% static 'images/cropped-isep-AMADOU-TRAWARE-scaled-1.png' %}" alt="ISEP Logo"
+               style="width:50px; height:50px; margin-right:10px;">
+          <span>ISEP Diamniadio</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+
+            {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'mon_dossier' %}">Dossier</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'cours' %}">Cours</a></li>
+            <li class="nav-item"><a class="nav-link active" href="{% url 'contact_us' %}">Contact us</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link disabled" href="#">Dossier</a></li>
+            <li class="nav-item"><a class="nav-link disabled" href="#">Cours</a></li>
+            <li class="nav-item"><a class="nav-link active disabled" href="#">Contact us</a></li>
+            {% endif %}
+          </ul>
+
+          <div class="ms-3">
+            {% if user.is_authenticated %}
+              <span class="text-white me-2">Bienvenue, {{ user.username }} !</span>
+              <a href="{% url 'logout' %}"><button class="login-btn">LOG OUT</button></a>
+            {% else %}
+              <a href="{% url 'login' %}"><button class="login-btn">LOG IN</button></a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Formulaire Contact -->
+  <div class="contact-container">
+    <h2>Contactez-nous</h2>
+    <form method="post" action="{% url 'contact_us' %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="id_name" class="form-label">Nom complet</label>
+        <input type="text" class="form-control" id="id_name" name="name" placeholder="Votre nom"
+               value="{% if user.is_authenticated %}{{ user.get_full_name }}{% endif %}" required>
+      </div>
+      <div class="mb-3">
+        <label for="id_email" class="form-label">Adresse e‑mail</label>
+        <input type="email" class="form-control" id="id_email" name="email" placeholder="Votre e‑mail"
+               value="{% if user.is_authenticated %}{{ user.email }}{% endif %}" required>
+      </div>
+      <div class="mb-3">
+        <label for="id_subject" class="form-label">Objet</label>
+        <input type="text" class="form-control" id="id_subject" name="subject" placeholder="Objet du message" required>
+      </div>
+      <div class="mb-3">
+        <label for="id_message" class="form-label">Message</label>
+        <textarea class="form-control" id="id_message" name="message" rows="5" placeholder="Votre message" required></textarea>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-submit">Envoyer le message</button>
+      </div>
+    </form>
+
+    <!-- Coordonnées ISEP Diamniadio -->
+    <div class="mt-4 text-center">
+      <p><strong>Téléphone :</strong> +221 33 820 00 00</p>
+      <p><strong>Email :</strong> contact@isepdiamniadio.com</p>
+      <p><strong>Adresse :</strong> Route de Diamniadio, Dakar, Sénégal</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 ISEP Diamniadio — Tous droits réservés.
+  </footer>
+
+</body>
+</html>

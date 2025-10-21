@@ -118,3 +118,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #EMAIL_HOST_USER = 'tonemail@gmail.com'        
 #EMAIL_HOST_PASSWORD = 'ton_mot_de_passe_app'  
 #DEFAULT_FROM_EMAIL = 'tonemail@gmail.com'
+#decorators / a tout inscrit on lui cree un profil vide et il doit etre mis dans un groupe soit admin soit etudiant qu'il peut renseigner plus tard on lui donnera un avatar par defaut il doit y avoir une difference entre administrateur et etudiant l'admin doit pouvoir faire des taches avancees l'admin doit pouvoir mettre des bulletins sur les dossiers pour chaque etudiants 

@@ -1,57 +1,148 @@
-{% extends "master.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dossier | ISEP Diamniadio</title>
 
-{% block title %}Dossier{% endblock %}
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <script src="{% static 'script.js' %}" defer></script>
 
-{% block content %}
-<div class="container-fluid py-5" style="background-color:#f3f0ff; min-height:90vh;">
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8 col-sm-10 p-5" style="background-color:#fff; border-radius:20px; box-shadow:0 8px 16px rgba(0,0,0,0.15);">
+  <style>
+    body {
+      background: linear-gradient(180deg, #f8fbff 0%, #e6f0ff 100%);
+      font-family: "Poppins", sans-serif;
+      color: #222;
+    }
 
-            <h2 class="text-center mb-5" style="color:#6A0DAD; font-weight:bold;">Mon Dossier</h2>
+    /* Navbar */
+    .navbar {
+      background: #2c2c74;
+      padding: 0.8rem 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .navbar a { color: #f2f2f2 !important; font-weight: 500; transition: 0.3s; }
+    .navbar a:hover { color: #ffb84d !important; }
+    .login-btn {
+      background-color: #ff8c00; border: none; border-radius: 8px;
+      padding: 7px 16px; color: #fff; font-weight: 500; transition: 0.3s;
+    }
+    .login-btn:hover { background-color: #ffa94d; transform: translateY(-1px); }
 
-            <!-- Photo utilisateur -->
-            <div class="text-center mb-4">
-                {% if dossier.photo %}
-                    <img src="{{ dossier.photo.url }}" alt="Photo utilisateur" class="rounded-circle" style="width:160px; height:160px; object-fit:cover; border:4px solid #6A0DAD;">
-                {% else %}
-                    <img src="{% static '/images/WhatsApp Image 2025-10-20 at 12.17.54.jpeg' %}" alt="Photo par dfaut" class="rounded-circle" style="width:160px; height:160px; object-fit:cover; border:4px solid #6A0DAD;">
-                {% endif %}
-            </div>
+    /* Carte centrale */
+    .dossier-container {
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 30px 40px;
+      background: #ffffffdd;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .dossier-container h2 {
+      text-align: center;
+      color: #4B0082;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
 
-            <!-- Informations de l'utilisateur -->
-            <ul class="list-group mb-4">
-                <li class="list-group-item"><strong>Nom :</strong> {{ dossier.nom }}</li>
-                <li class="list-group-item"><strong>Prénom :</strong> {{ dossier.prenom }}</li>
-                <li class="list-group-item"><strong>Téléphone :</strong> {{ dossier.telephone }}</li>
-                <li class="list-group-item"><strong>Adresse :</strong> {{ dossier.adresse }}</li>
-                <li class="list-group-item"><strong>Date de naissance :</strong> {{ dossier.date_naissance }}</li>
-            </ul>
+    .dossier-container img {
+      width:160px; height:160px; object-fit:cover;
+      border:4px solid #4B0082;
+      border-radius:50%;
+    }
 
-            <!-- Boutons -->
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{% url 'home' %}" class="btn" style="background-color:#6A0DAD; color:#fff; font-weight:bold; padding:12px 30px; border-radius:10px;">
-                    Accueil
-                </a>
-                <a href="{% url 'mon_dossier' %}" class="btn" style="background-color:#6A0DAD; color:#fff; font-weight:bold; padding:12px 30px; border-radius:10px;">
-                    Modifier
-                </a>
-            </div>
+    /* Liste des informations */
+    .list-group-item {
+      font-size: 15px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #dcd6f7;
+    }
+    .list-group-item strong { color: #4B0082; }
 
+    /* Boutons */
+    .btn-violet {
+      background-color:#2c2c74; color:#fff; border-radius:8px;
+      padding:10px 25px; font-weight:600; transition:0.3s;
+    }
+    .btn-violet:hover { background-color:#4646a6; }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+          <img src="{% static 'images/cropped-isep-AMADOU-TRAWARE-scaled-1.png' %}" alt="ISEP Logo" style="width:50px; height:50px; margin-right:10px;">
+          <span>ISEP Diamniadio</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+            {% if user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'mon_dossier' %}">Dossier</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'cours' %}">Cours</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'contact_us' %}">Contact us</a></li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link disabled" href="#">Dossier</a></li>
+              <li class="nav-item"><a class="nav-link disabled" href="#">Cours</a></li>
+              <li class="nav-item"><a class="nav-link disabled" href="#">Contact us</a></li>
+            {% endif %}
+          </ul>
+          <div class="ms-3">
+            {% if user.is_authenticated %}
+              <span class="text-white me-2">Bienvenue, {{ user.username }} !</span>
+              <a href="{% url 'logout' %}"><button class="login-btn">LOG OUT</button></a>
+            {% else %}
+              <a href="{% url 'login' %}"><button class="login-btn">LOG IN</button></a>
+            {% endif %}
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+    </nav>
+  </header>
 
-<style>
-.list-group-item {
-    font-size: 15px;
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    border: 1px solid #dcd6f7;
-}
-.list-group-item strong {
-    color: #4B0082;
-}
-</style>
-{% endblock %}
+  <!-- Carte Mon Dossier -->
+  <div class="dossier-container">
+    <h2>Mon Dossier</h2>
+
+    <div class="text-center mb-4">
+      {% if dossier.photo %}
+        <img src="{{ dossier.photo.url }}" alt="Photo utilisateur">
+      {% else %}
+        <img src="{% static '/images/WhatsApp Image 2025-10-20 at 12.17.54.jpeg' %}" alt="Photo par défaut">
+      {% endif %}
+    </div>
+
+    <!-- Informations -->
+    <ul class="list-group mb-4">
+      <li class="list-group-item"><strong>Nom :</strong> {{ dossier.nom }}</li>
+      <li class="list-group-item"><strong>Prénom :</strong> {{ dossier.prenom }}</li>
+      <li class="list-group-item"><strong>Téléphone :</strong> {{ dossier.telephone }}</li>
+      <li class="list-group-item"><strong>Adresse :</strong> {{ dossier.adresse }}</li>
+      <li class="list-group-item"><strong>Date de naissance :</strong> {{ dossier.date_naissance }}</li>
+    </ul>
+
+    <!-- Boutons -->
+    <div class="d-flex justify-content-between mt-4">
+      <a href="{% url 'home' %}" class="btn btn-violet">Accueil</a>
+      <a href="{% url 'mon_dossier' %}" class="btn btn-violet">Modifier</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 ISEP Diamniadio — Tous droits réservés.
+  </footer>
+</body>
+</html>

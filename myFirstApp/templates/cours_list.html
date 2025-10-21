@@ -4,53 +4,51 @@
 {% block title %}Liste des Cours{% endblock %}
 
 {% block content %}
-<div class="container py-5" style="background-color:#f8f9fa; min-height:90vh;">
+<div class="container-fluid py-5" style="background-color:#e6f0ff; min-height:90vh;">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12 p-5"
-             style="background-color:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+             style="background-color:#fff; border-radius:20px; box-shadow:0 8px 16px rgba(0,0,0,0.15);">
 
             <!-- Titre -->
-            <h2 class="text-center mb-4" style="color:#4B0082; font-weight:600; letter-spacing:0.5px;">
-                Liste des Cours
+            <h2 class="text-center mb-4" style="color:#4B0082; font-weight:bold;">
+                📚 Liste des Cours
             </h2>
 
             <!-- Message si aucun cours -->
             {% if cours_list %}
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle text-center" style="border-color:#dee2e6;">
-                        <thead style="background-color:#f3f0ff; color:#4B0082; font-weight:600;">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead style="background-color:#4B0082; color:white;">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nom du Cours</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Professeur</th>
+                            <th scope="col">Crédits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cours in cours_list %}
                             <tr>
-                                <th scope="col" style="width:5%;">#</th>
-                                <th scope="col" style="width:30%;">Nom du cours</th>
-                                <th scope="col" style="width:20%;">Code</th>
-                                <th scope="col" style="width:30%;">Professeur</th>
-                                <th scope="col" style="width:15%;">Crédits</th>
+                                <td>{{ forloop.counter }}</td>
+                                <td style="color:#4B0082; font-weight:600;">{{ cours.nom }}</td>
+                                <td>{{ cours.code }}</td>
+                                <td>{{ cours.professeur }}</td>
+                                <td>{{ cours.credits }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for cours in cours_list %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td style="color:#333;">{{ cours.nom }}</td>
-                                    <td style="color:#555;">{{ cours.code }}</td>
-                                    <td style="color:#555;">{{ cours.professeur }}</td>
-                                    <td style="color:#555;">{{ cours.credits }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
-                <div class="alert alert-secondary text-center mt-4" style="border-radius:10px;">
+                <div class="alert text-center" style="background-color:#FF8C00; color:white; font-weight:bold; border-radius:10px;">
                     Aucun cours disponible pour le moment.
                 </div>
             {% endif %}
-
+<br><br><br>
             <!-- Bouton retour à l'accueil -->
             <div class="text-center mt-5">
                 <a href="{% url 'home' %}"
-                   class="btn btn-outline-dark px-5 py-2"
-                   style="font-weight:500; border-radius:8px; transition:all 0.3s;">
+                   class="btn"
+                   style="background-color:#4B0082; color:white; padding:12px 40px; border-radius:10px; font-weight:bold;">
                     Retour à l'accueil
                 </a>
             </div>

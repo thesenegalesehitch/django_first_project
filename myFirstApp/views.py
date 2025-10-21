@@ -8,7 +8,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
 
 # --- Authentification ---
 def inscription(request):
@@ -121,3 +123,24 @@ def password_reset_display(request, username):
     token = default_token_generator.make_token(user)
     reset_link = request.build_absolute_uri(f'/reset/{uid}/{token}/')
     return render(request, 'password_reset_display.html', {'reset_link': reset_link})
+
+def contact_us(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+
+        # Exemple d’envoi d’email (à adapter)
+        send_mail(
+            subject=f"[Contact ISEP] {subject}",
+            message=f"De : {name} <{email}>\n\n{message}",
+            from_email="webmaster@isepdiamniadio.com",
+            recipient_list=["contact@isepdiamniadio.com"],
+            fail_silently=False,
+        )
+
+        messages.success(request, "Votre message a été envoyé avec succès !")
+        return redirect('contact_us')
+
+    return render(request, "contact.html")
