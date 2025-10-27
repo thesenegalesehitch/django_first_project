@@ -1,127 +1,188 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Inscription</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+<html lang="fr">
 
-	<style>
-		body, html {
-			margin: 0;
-			padding: 0;
-			height: 100%;
-			background: #81abb3 !important;
-			font-family: 'Segoe UI', sans-serif;
-		}
-		.user_card {
-			width: 350px;
-			margin: auto;
-			background: #64958c;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			padding: 20px 25px;
-			border-radius: 10px;
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2),
-			            0 6px 20px rgba(0, 0, 0, 0.19);
-		}
-		#form-title {
-			color: #fff;
-			font-weight: bold;
-			margin-bottom: 15px;
-		}
-		.login_btn {
-			width: 100%;
-			background: #33ccff !important;
-			color: #fff !important;
-			font-weight: bold;
-		}
-		.login_btn:focus {
-			box-shadow: none !important;
-			outline: 0 !important;
-		}
-		.input-group-text {
-			background: #5e4a2b !important;
-			color: #fff !important;
-			border: none !important;
-			border-radius: 0.25rem 0 0 0.25rem !important;
-		}
-		input.form-control {
-			box-shadow: none !important;
-			outline: none !important;
-		}
-		a {
-			color: #fff;
-			text-decoration: underline;
-		}
-		a:hover {
-			color: #33ccff;
-			text-decoration: none;
-		}
-	</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription | ISEP Diamniadio</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Fichiers statiques -->
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <script src="{% static 'script.js' %}" defer></script>
+
+  <style>
+    /* Fond bleu clair subtil */
+    body {
+      background: linear-gradient(180deg, #f8fbff 0%, #e6f0ff 100%);
+      font-family: "Poppins", sans-serif;
+      color: #222;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: #2c2c74;
+      padding: 0.8rem 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      color: #f2f2f2 !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      color: #ffb84d !important;
+    }
+
+    .login-btn {
+      background-color: #ff8c00;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 16px;
+      color: #fff;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #ffa94d;
+      transform: translateY(-1px);
+    }
+
+    /* Carte inscription centrale */
+    .register-container {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 30px 40px;
+      background: #ffffffdd;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .register-container h2 {
+      text-align: center;
+      color: #4B0082;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
+    .register-container .form-label { font-weight: 500; color:#4B0082; }
+    .register-container input {
+      width: 100%; padding: 8px 12px; border-radius: 8px;
+      border: 1px solid #dcd6f7; font-size: 14px; margin-bottom: 15px;
+    }
+    .register-container input:focus { border-color: #4B0082; box-shadow: 0 0 5px rgba(75,0,130,0.3); }
+    .btn-violet { background-color:#2c2c74; color:#fff; border-radius:8px; padding:10px 25px; font-weight:600; transition:0.3s; }
+    .btn-violet:hover { background-color:#4646a6; }
+    .btn-orange { background-color:#FF8C00; color:#fff; border-radius:8px; padding:10px 25px; font-weight:600; transition:0.3s; }
+    .btn-orange:hover { background-color:#ffa94d; }
+
+    #messages {
+      background-color: #4B0082;
+      color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      text-align: center;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    a { text-decoration: none; color: #FF8C00; }
+    a:hover { color: #ffa94d; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      background: #2c2c74;
+      color: #fff;
+      font-weight: 500;
+      margin-top: 50px;
+    }
+  </style>
 </head>
 
 <body>
-	<div class="container h-100 d-flex justify-content-center align-items-center">
-		<div class="user_card">
-			<h3 id="form-title">INSCRIPTION</h3>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+          <img src="{% static 'images/cropped-isep-AMADOU-TRAWARE-scaled-1.png' %}" alt="ISEP Logo"
+               style="width:50px; height:50px; margin-right:10px;">
+          <span>ISEP Diamniadio</span>
+        </a>
 
-			<form method="post" action="">
-				{% csrf_token %}
-				
-				<div class="input-group mb-3">
-					<div class="input-group-prepend">
-						<span class="input-group-text"><i class="fas fa-user"></i></span>
-					</div>
-					{{ formulaire.username }}
-				</div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-				<div class="input-group mb-2">
-					<div class="input-group-prepend">
-						<span class="input-group-text"><i class="fas fa-envelope-square"></i></span>
-					</div>
-					{{ formulaire.email }}
-				</div>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
 
-				<div class="input-group mb-2">
-					<div class="input-group-prepend">
-						<span class="input-group-text"><i class="fas fa-key"></i></span>
-					</div>
-					{{ formulaire.password1 }}
-				</div>
+            {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'mon_dossier' %}">Dossier</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'cours' %}">Cours</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'contact_us' %}">Contact us</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link disabled" href="#">Dossier</a></li>
+            <li class="nav-item"><a class="nav-link disabled" href="#">Cours</a></li>
+            <li class="nav-item"><a class="nav-link disabled" href="#">Contact us</a></li>
+            {% endif %}
+          </ul>
 
-				<div class="input-group mb-3">
-					<div class="input-group-prepend">
-						<span class="input-group-text"><i class="fas fa-key"></i></span>
-					</div>
-					{{ formulaire.password2 }}
-				</div>
+          <div class="ms-3">
+            {% if user.is_authenticated %}
+              <span class="text-white me-2">Bienvenue, {{ user.username }} !</span>
+              <a href="{% url 'logout' %}"><button class="login-btn">LOG OUT</button></a>
+            {% else %}
+              <a href="{% url 'login' %}"><button class="login-btn">LOG IN</button></a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-				<div class="login_container">
-					<input class="btn login_btn" type="submit" value="S'INSCRIRE">
-				</div>
-			</form>
+  <!-- Carte Inscription -->
+  <div class="register-container">
+    <h2>INSCRIPTION</h2>
 
-			<div class="mt-4 text-center">
-				<p class="text-light mb-0">
-					Vous avez déjà un compte ? 
-					<a href="{% url 'login' %}">Se connecter</a>
-				</p>
-			</div>
-		</div>
-	</div>
+    {% if messages %}
+      {% for message in messages %}
+        <div id="messages">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
 
-	<script>
-		// JS pour placeholders
-		const fields = document.querySelectorAll('input');
-		if (fields.length >= 4) {
-			fields[1].placeholder = 'Login...';
-			fields[2].placeholder = 'Email...';
-			fields[3].placeholder = 'Mot de passe...';
-			fields[4].placeholder = 'Confirmer mot de passe...';
-		}
-		fields.forEach(field => field.classList.add('form-control'));
-	</script>
+    <form method="post" action="">
+      {% csrf_token %}
+
+      <label class="form-label">Nom d'utilisateur</label>
+      {{ formulaire.username }}
+
+      <label class="form-label">Email</label>
+      {{ formulaire.email }}
+
+      <label class="form-label">Mot de passe</label>
+      {{ formulaire.password1 }}
+
+      <label class="form-label">Confirmer mot de passe</label>
+      {{ formulaire.password2 }}
+
+      <div class="d-flex justify-content-center mt-4 gap-2 flex-wrap">
+        <button type="submit" class="btn btn-violet">S'INSCRIRE</button>
+        <a href="{% url 'login' %}" class="btn btn-orange">Se connecter</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 ISEP Diamniadio — Tous droits réservés.
+  </footer>
 </body>
 </html>

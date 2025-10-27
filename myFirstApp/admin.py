@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
     Dossier, Cours, Etudiant, Bulletin,
     Departement, Filiere, Promotion, EmploiDuTemps
@@ -10,7 +10,7 @@ from .models import (
 @admin.register(Etudiant)
 class EtudiantAdmin(admin.ModelAdmin):
     list_display = ('prenom', 'nom', 'email', 'telephone', 'filiere', 'promotion')
-    search_fields = ('prenom', 'nom', 'email', 'filiere', 'promotion__nom')
+    search_fields = ('prenom', 'nom', 'email', 'filiere__nom', 'promotion__nom')
     list_filter = ('filiere', 'promotion')
     ordering = ('nom', 'prenom')
 
@@ -25,7 +25,7 @@ class DossierAdmin(admin.ModelAdmin):
 @admin.register(Cours)
 class CoursAdmin(admin.ModelAdmin):
     list_display = ('titre', 'code', 'professeur', 'credits', 'date_creation')
-    search_fields = ('titre', 'code', 'professeur')
+    search_fields = ('titre', 'code', 'professeur__username')
     list_filter = ('date_creation',)
     ordering = ('-date_creation',)
 
@@ -49,7 +49,7 @@ class FiliereAdmin(admin.ModelAdmin):
     search_fields = ('nom', 'alias', 'departement__nom')
     list_filter = ('departement',)
 
-# --- Admin pour Promotion (anciennement Classe) ---
+# --- Admin pour Promotion ---
 @admin.register(Promotion)
 class PromotionAdmin(admin.ModelAdmin):
     list_display = ('nom', 'filiere', 'annee')
@@ -60,16 +60,23 @@ class PromotionAdmin(admin.ModelAdmin):
 @admin.register(EmploiDuTemps)
 class EmploiDuTempsAdmin(admin.ModelAdmin):
     list_display = ('promotion', 'jour', 'cours', 'heure_debut', 'heure_fin', 'professeur')
-    search_fields = ('promotion__nom', 'cours__titre', 'professeur')
+    search_fields = ('promotion__nom', 'cours__titre', 'professeur__username')
     list_filter = ('promotion', 'jour')
 
-# --- Admin personnalisé pour les utilisateurs Django ---
-class CustomUserAdmin(UserAdmin):
+# --- Inline pour afficher le dossier dans l'admin User ---
+class DossierInline(admin.StackedInline):
+    model = Dossier
+    can_delete = False
+    verbose_name_plural = 'Dossier'
+
+# --- Admin personnalisé pour User ---
+class CustomUserAdmin(BaseUserAdmin):
+    inlines = (DossierInline,)
     list_display = ('username', 'email', 'is_staff', 'is_superuser', 'is_active', 'date_joined')
     list_filter = ('is_staff', 'is_superuser', 'is_active')
     search_fields = ('username', 'email')
     ordering = ('username',)
 
-# --- Réenregistrement de l'utilisateur ---
+# --- Réenregistrement du User ---
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)

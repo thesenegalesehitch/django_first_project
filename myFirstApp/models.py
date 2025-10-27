@@ -23,8 +23,8 @@ class Filiere(models.Model):
 # --- Promotion (anciennement Classe) ---
 class Promotion(models.Model):
     filiere = models.ForeignKey(Filiere, on_delete=models.CASCADE)
-    nom = models.CharField(max_length=50)  # Exemple: EMA2025, DBE2025
-    annee = models.PositiveIntegerField()  # Facultatif : année académique
+    nom = models.CharField(max_length=50)  
+    annee = models.PositiveIntegerField()  
 
     def __str__(self):
         return f"{self.nom} - {self.filiere.nom}"
@@ -47,16 +47,17 @@ class Etudiant(models.Model):
 
 # --- Dossier utilisateur ---
 class Dossier(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='photos/', default='photos/default-user.png', blank=True)
-    nom = models.CharField(max_length=100, blank=True)
-    prenom = models.CharField(max_length=100, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='dossier')
+    photo = models.ImageField(upload_to='photos/', null=True, blank=True)
+    nom = models.CharField(max_length=50, blank=True)
+    prenom = models.CharField(max_length=50, blank=True)
     telephone = models.CharField(max_length=20, blank=True)
-    adresse = models.CharField(max_length=255, blank=True)
     date_naissance = models.DateField(null=True, blank=True)
+    adresse = models.TextField(blank=True)
 
     def __str__(self):
         return f"Dossier de {self.user.username}"
+
 
 
 # --- Cours accessible à tous les utilisateurs ---

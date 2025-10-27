@@ -107,32 +107,6 @@ def contact_us(request):
     return render(request, "contact_us.html")
 
 
-# --------------------------
-# Gestion du dossier utilisateur
-# --------------------------
-@login_required
-def mon_dossier(request):
-    dossier, created = Dossier.objects.get_or_create(user=request.user)
-
-    if request.method == 'POST':
-        if 'delete_photo' in request.POST:
-            dossier.photo.delete(save=True)
-            messages.success(request, 'Photo supprimée avec succès.')
-            return redirect('mon_dossier')
-
-        form = DossierForm(request.POST, request.FILES, instance=dossier)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Votre dossier a été mis à jour avec succès.')
-            return redirect('mon_dossier')
-        else:
-            messages.error(request, 'Veuillez corriger les erreurs dans le formulaire.')
-    else:
-        form = DossierForm(instance=dossier)
-
-    bulletins = Bulletin.objects.filter(etudiant=dossier) if est_etudiant(request.user) else None
-    return render(request, 'mon_dossier.html', {'form': form, 'dossier': dossier, 'bulletins': bulletins})
-
 
 @login_required
 def dossier_detail(request):
@@ -228,3 +202,35 @@ def password_reset_display(request, username):
     token = default_token_generator.make_token(user)
     reset_link = request.build_absolute_uri(f'/reset/{uid}/{token}/')
     return render(request, 'password_reset_display.html', {'reset_link': reset_link})
+
+@login_required
+def mon_dossier(request):
+    # Récupère ou crée le dossier pour l'utilisateur
+    dossier, created = Dossier.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        # Suppression de la photo si demandé
+        if 'delete_photo' in request.POST and dossier.photo:
+            dossier.photo.delete(save=True)
+            messages.success(request, 'Photo supprimée avec succès.')
+            return redirect('mon_dossier')
+
+        # Mise à jour du dossier
+        form = DossierForm(request.POST, request.FILES, instance=dossier)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Votre dossier a été mis à jour avec succès.')
+            return redirect('mon_dossier')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs dans le formulaire.')
+    else:
+        form = DossierForm(instance=dossier)
+
+    # Récupérer les bulletins uniquement si l'utilisateur est un étudiant
+    bulletins = Bulletin.objects.filter(etudiant__user=request.user) if est_etudiant(request.user) else None
+
+    return render(request, 'mon_dossier.html', {
+        'form': form,
+        'dossier': dossier,
+        'bulletins': bulletins
+    })
